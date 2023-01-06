@@ -4,11 +4,11 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { emit, listen } from '@tauri-apps/api/event'
 import "./App.css";
 
-const unlisten = await listen('fromrust', (event) => {
-  // event.event is the event name (useful if you want to use a single callback fn for multiple event types)
-  // event.payload is the payload object
-  console.log("from rust")
-})
+// const unlisten = await listen('fromrust', (event) => {
+//   // event.event is the event name (useful if you want to use a single callback fn for multiple event types)
+//   // event.payload is the payload object
+//   console.log("from rust")
+// })
 
 function App() {
   const [greetMsg, setGreetMsg] = useState("");

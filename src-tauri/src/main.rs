@@ -41,7 +41,7 @@ fn greet(name: &str) -> String {
 }
 
 fn main() {
-    let (oscPackageSender, oscPackageReceiver): (
+    let (osc_package_sender, oscPackageReceiver): (
         Sender<OscPacketPayload>,
         Receiver<OscPacketPayload>,
     ) = channel();
@@ -77,7 +77,7 @@ fn main() {
                                 packet: packet,
                                 port: 9010,
                             };
-                            oscPackageSender.send(payload);
+                            osc_package_sender.send(payload);
                             // send_cc(2,64);
                         }
                         Err(e) => {
@@ -87,6 +87,7 @@ fn main() {
                     }
                 }
             });
+
 
             tauri::async_runtime::spawn(async move {
                 // create midi sender
@@ -216,26 +217,5 @@ fn create_midi_output() -> Result<MidiOutputConnection, Box<dyn Error>> {
 
     println!("\nOpening connection");
     let mut conn_out = midi_out.connect(out_port, "midir-test")?;
-    println!("Connection open. Listen!");
-    {
-        // Define a new scope in which the closure `play_note` borrows conn_out, so it can be called easily
-        let mut play_note = |note: u8, duration: u64| {
-            const NOTE_ON_MSG: u8 = 0x90;
-            const NOTE_OFF_MSG: u8 = 0x80;
-            const VELOCITY: u8 = 0x64;
-            // We're ignoring errors in here
-            let _ = conn_out.send(&[NOTE_ON_MSG, note, VELOCITY]);
-            sleep(Duration::from_millis(duration * 150));
-            let _ = conn_out.send(&[NOTE_OFF_MSG, note, VELOCITY]);
-        };
-
-        let mut send_cc = |controller: u8, value: u8| {
-            const TYPE: u8 = 0xB0;
-            let _ = conn_out.send(&[TYPE, controller, value]);
-        };
-        send_cc(1, 0);
-        send_cc(1, 64);
-        send_cc(1, 127);
-    }
     Ok(conn_out)
 }
