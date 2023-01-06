@@ -59,12 +59,12 @@ fn main() {
             tauri::async_runtime::spawn(async move {
                 // A loop that takes output from the async process and sends it
                 // to the webview via a Tauri Event
-                let addr = match SocketAddrV4::from_str("127.0.0.1:9010") {
+                let addr = match SocketAddrV4::from_str("0.0.0.0:9010") {
                     Ok(addr) => addr,
                     Err(_) => panic!("{}", "could not listen to port 9010"),
                 };
                 let sock = UdpSocket::bind(addr).unwrap();
-                println!("Listening to {}", addr);
+                println!("Listening to {} for incoming osc messages", addr);
 
                 let mut buf = [0u8; rosc::decoder::MTU];
 
@@ -113,11 +113,13 @@ fn main() {
                 };
 
                 let mut handle_osc_message = |port: i32, msg: OscMessage| {
+                    println!("{}", port);
                     if (port == 9010 && msg.addr == "/kls/io/crank") {
                         for arg in msg.args {
                             match arg {
                                 OscType::Int(val) => {
-                                    println!("int: {}", val)
+                                    println!("int: {}", val);
+                                    send_cc(2, val as u8);
                                 }
                                 OscType::Float(val) => {
                                     println!("float: {}", val);
@@ -215,7 +217,6 @@ fn create_midi_output() -> Result<MidiOutputConnection, Box<dyn Error>> {
         }
     };
 
-    println!("\nOpening connection");
     let mut conn_out = midi_out.connect(out_port, "midir-test")?;
     Ok(conn_out)
 }
