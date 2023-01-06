@@ -121,7 +121,7 @@ fn main() {
                                 }
                                 OscType::Float(val) => {
                                     println!("float: {}", val);
-                                    send_cc(1, val as u8);
+                                    send_cc(2, val as u8);
                                 }
                                 _ => println!("type not yet implemented"),
                             }

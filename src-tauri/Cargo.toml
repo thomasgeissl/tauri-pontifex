@@ -17,7 +17,6 @@ tauri-build = { version = "1.2", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.2", features = ["shell-open"] }
-tokio = { version = "1.24.0", features = ["full"] }
 rosc = "0.9.1"
 midir = "0.8.0"
 
